@@ -1,12 +1,45 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import * as React from 'react';
+import { useState } from 'react'
+import { View, Text, StyleSheet } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Login from './screens/Login';
+import Main from './screens/Main';
+
+const Stack = createNativeStackNavigator()
 
 export default function App() {
+  const [login, setLogin] = useState(false)
+
+  const getData = async () => {
+
+    let strKey = 'loginInfo';
+
+    try {
+      const value = await AsyncStorage.getItem(strKey)
+      if (value !== null) {
+        // lấy được dữ liệu:
+        setLogin(true)
+        console.log(value);
+      }
+    } catch (e) {
+      // error reading value
+      console.log(e);
+    }
+
+  }
+
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator>
+        {getData}
+        {
+          login && <Stack.Screen name='Login' component={Login} options={({ headerShown: false })} />
+        }
+        <Stack.Screen name='Main' component={Main} options={({ headerShown: false })} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
