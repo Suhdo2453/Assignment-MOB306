@@ -1,7 +1,8 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, FlatList } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, FlatList, RefreshControl } from 'react-native'
 import React, { useState } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons';
 import PostItem from '../../components/PostItem';
+import { url_api_posts, url_api_user } from '../../data/API'
 
 
 const listTab = [
@@ -55,11 +56,62 @@ const data = [
     },
 ]
 
-const Home = () => {
+const Home = (props) => {
+    const [isLoading, setIsLoading] = useState(false)
     const [status, setStatus] = useState('For you')
+    const [data, setData] = useState([])
     const setStatusFilter = status => {
         setStatus(status)
     }
+
+    const addData = (posts, users) => {
+        data.length = 0
+        for (const post of posts) {
+            for (const user of users) {
+                if (post.user_id == user.id) {
+                    data.push({
+                        post_id: post.id,
+                        user_name: user.fullName,
+                        content: post.content,
+                        title: post.title,
+                        image_post: post.image,
+                        image_user: user.avatar,
+                        like: post.like
+                    })
+                }
+            }
+        }
+        setIsLoading(false)
+    }
+
+    const getData = () => {
+        Promise.all([
+            fetch(url_api_posts),
+            fetch(url_api_user)
+        ])
+            .then(async ([res1, res2]) => {
+                const posts = await res1.json()
+                const users = await res2.json()
+                addData(posts, users)
+            })
+            .catch(err => {
+                console.log(err);
+            })
+            .finally(
+                setIsLoading(false)
+            )
+    }
+
+    React.useEffect(() => {
+        const unsubscribe = props.navigation.addListener('focus', () => {
+            getData()
+            setIsLoading(true)
+        })
+
+        return unsubscribe
+    }, [props.navigation])
+
+
 
     const getHeader = () => {
         return (
@@ -98,10 +150,17 @@ const Home = () => {
             <FlatList
                 data={data}
                 renderItem={({ item, index }) =>
-                    <PostItem key={index} title={item.title} content={item.content} image={item.image} author={item.author} />
+                    <PostItem key={index} title={item.title} content={item.content} image={item.image_post} author={item.user_name} />
                 }
                 keyExtractor={(item, index) => index.toString()}
-                ListHeaderComponent={getHeader} />
+                ListHeaderComponent={getHeader}
+                refreshControl={
+                    <RefreshControl refreshing={isLoading}
+                        onRefresh={() => {
+                            setIsLoading(true)
+                            getData()
+                        }} />
+                } />
         </View>
     )
 }
