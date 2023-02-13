@@ -1,10 +1,13 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image, Dimensions } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import Icon from 'react-native-vector-icons/EvilIcons';
 import IconFollow from 'react-native-vector-icons/Feather'
 
 const PostItem = (props) => {
     const { title, content, image, author } = props
+    const [fullName, setFullName] = useState(null)
+
+
     return (
         <View style={styles.container}>
             <View style={styles.containerAuthor}>

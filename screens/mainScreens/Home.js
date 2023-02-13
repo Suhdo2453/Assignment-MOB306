@@ -116,7 +116,7 @@ const Home = (props) => {
     const getHeader = () => {
         return (
             <>
-                <TouchableOpacity style={styles.createPost}>
+                <TouchableOpacity style={styles.createPost} onPress={() => props.navigation.navigate('AddPost')}>
                     <Text style={{ color: '#c2c2c2' }}>Tạo bài viết</Text>
                 </TouchableOpacity>
 
