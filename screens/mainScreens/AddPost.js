@@ -1,6 +1,5 @@
-import { Button, Dimensions, Image, StyleSheet, Text, TextInput, TouchableOpacity, View, VirtualizedList } from 'react-native'
+import { Button, Dimensions, Image, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
-import { ScrollView } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as ImagePicker from 'expo-image-picker'
 import * as FileSystem from 'expo-file-system'
