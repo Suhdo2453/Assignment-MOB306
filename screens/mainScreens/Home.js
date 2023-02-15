@@ -29,33 +29,6 @@ const listTab = [
     }
 ]
 
-const data = [
-    {
-        title: '5 tips to create a modern app UI Design',
-        content: 'Recently I was given the task to "Modernize" Incurrent companies app UI on Android. The terms modern, young, cool, etc., atv all quite vague. What makes a design or old?',
-        author: 'Jishnu Hari',
-        image: 'https://i0.wp.com/viciados.net/wp-content/uploads/2023/01/The-Last-of-Us-HBO-Serie-2023.webp'
-    },
-    {
-        title: '5 tips to create a modern app UI Design',
-        content: 'Recently I was given the task to "Modernize" Incurrent companies app UI on Android. The terms modern, young, cool, etc., atv all quite vague. What makes a design or old?',
-        author: 'Jishnu Hari',
-        image: 'https://i0.wp.com/viciados.net/wp-content/uploads/2023/01/The-Last-of-Us-HBO-Serie-2023.webp'
-    },
-    {
-        title: '5 tips to create a modern app UI Design',
-        content: 'Recently I was given the task to "Modernize" Incurrent companies app UI on Android. The terms modern, young, cool, etc., atv all quite vague. What makes a design or old?',
-        author: 'Jishnu Hari',
-        image: 'https://i0.wp.com/viciados.net/wp-content/uploads/2023/01/The-Last-of-Us-HBO-Serie-2023.webp'
-    },
-    {
-        title: '5 tips to create a modern app UI Design',
-        content: 'Recently I was given the task to "Modernize" Incurrent companies app UI on Android. The terms modern, young, cool, etc., atv all quite vague. What makes a design or old?',
-        author: 'Jishnu Hari',
-        image: 'https://i0.wp.com/viciados.net/wp-content/uploads/2023/01/The-Last-of-Us-HBO-Serie-2023.webp'
-    },
-]
-
 const Home = (props) => {
     const [isLoading, setIsLoading] = useState(false)
     const [status, setStatus] = useState('For you')
@@ -64,42 +37,16 @@ const Home = (props) => {
         setStatus(status)
     }
 
-    const addData = (posts, users) => {
-        data.length = 0
-        for (const post of posts) {
-            for (const user of users) {
-                if (post.user_id == user.id) {
-                    data.push({
-                        post_id: post.id,
-                        user_name: user.fullName,
-                        content: post.content,
-                        title: post.title,
-                        image_post: post.image,
-                        image_user: user.avatar,
-                        like: post.like
-                    })
-                }
-            }
-        }
-        setIsLoading(false)
-    }
-
     const getData = () => {
-        Promise.all([
-            fetch(url_api_posts),
-            fetch(url_api_user)
-        ])
-            .then(async ([res1, res2]) => {
-                const posts = await res1.json()
-                const users = await res2.json()
-                addData(posts, users)
+        fetch(url_api_posts + '?_expand=tb_users')
+            .then(async (res) => {
+                const posts = await res.json()
+                setData(posts)
+                setIsLoading(false)
             })
             .catch(err => {
                 console.log(err);
             })
-            .finally(
-                setIsLoading(false)
-            )
     }
 
     React.useEffect(() => {
@@ -150,7 +97,7 @@ const Home = (props) => {
             <FlatList
                 data={data}
                 renderItem={({ item, index }) =>
-                    <PostItem key={index} title={item.title} content={item.content} image={item.image_post} author={item.user_name} />
+                    <PostItem key={index} title={item.title} content={item.content} image={item.image} author={item.tb_users.fullName} />
                 }
                 keyExtractor={(item, index) => index.toString()}
                 ListHeaderComponent={getHeader}

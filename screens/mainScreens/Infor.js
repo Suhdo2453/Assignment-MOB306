@@ -1,38 +1,12 @@
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
-import PostItem from '../../components/PostItem'
+import PostUser from '../../components/PostUser'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { url_api_user } from '../../data/API'
 import * as ImagePicker from 'expo-image-picker'
 import * as FileSystem from 'expo-file-system'
+import { url_api_posts, url_api_user } from '../../data/API'
 
-const data = [
-    {
-        title: '5 tips to create a modern app UI Design',
-        content: 'Recently I was given the task to "Modernize" Incurrent companies app UI on Android. The terms modern, young, cool, etc., atv all quite vague. What makes a design or old?',
-        author: 'Jishnu Hari',
-        image: 'https://i0.wp.com/viciados.net/wp-content/uploads/2023/01/The-Last-of-Us-HBO-Serie-2023.webp'
-    },
-    {
-        title: '5 tips to create a modern app UI Design',
-        content: 'Recently I was given the task to "Modernize" Incurrent companies app UI on Android. The terms modern, young, cool, etc., atv all quite vague. What makes a design or old?',
-        author: 'Jishnu Hari',
-        image: 'https://i0.wp.com/viciados.net/wp-content/uploads/2023/01/The-Last-of-Us-HBO-Serie-2023.webp'
-    },
-    {
-        title: '5 tips to create a modern app UI Design',
-        content: 'Recently I was given the task to "Modernize" Incurrent companies app UI on Android. The terms modern, young, cool, etc., atv all quite vague. What makes a design or old?',
-        author: 'Jishnu Hari',
-        image: 'https://i0.wp.com/viciados.net/wp-content/uploads/2023/01/The-Last-of-Us-HBO-Serie-2023.webp'
-    },
-    {
-        title: '5 tips to create a modern app UI Design',
-        content: 'Recently I was given the task to "Modernize" Incurrent companies app UI on Android. The terms modern, young, cool, etc., atv all quite vague. What makes a design or old?',
-        author: 'Jishnu Hari',
-        image: 'https://i0.wp.com/viciados.net/wp-content/uploads/2023/01/The-Last-of-Us-HBO-Serie-2023.webp'
-    },
-]
 
 const Infor = (props) => {
     const [avatar, setAvatar] = useState(null)
@@ -40,6 +14,8 @@ const Infor = (props) => {
     const [fullName, setFullName] = useState(null)
     const [password, setPassword] = useState(null)
     const [idUser, setIdUser] = useState(null)
+
+    const [data, setData] = useState([])
 
     let strKey = 'loginInfo'
 
@@ -55,6 +31,15 @@ const Infor = (props) => {
                 setIdUser(obj.id)
                 setUserName(obj.userName)
                 setPassword(obj.password)
+
+                fetch(url_api_posts + '?tb_usersId=' + obj.id)
+                    .then(async (res) => {
+                        const posts = await res.json()
+                        setData(posts)
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
             }
         } catch (e) {
             // error reading value
@@ -168,7 +153,7 @@ const Infor = (props) => {
 
                     <View style={{ flexDirection: 'row', marginTop: 24 }}>
                         <View style={{ alignItems: 'center', marginHorizontal: 16 }}>
-                            <Text style={{ fontSize: 20, fontWeight: '500' }}>4</Text>
+                            <Text style={{ fontSize: 20, fontWeight: '500' }}>{data.length}</Text>
                             <Text>Post</Text>
                         </View>
                         <View style={{ alignItems: 'center', marginHorizontal: 16 }}>
@@ -193,7 +178,7 @@ const Infor = (props) => {
             <FlatList
                 data={data}
                 renderItem={({ item, index }) =>
-                    <PostItem key={index} title={item.title} content={item.content} image={item.image} author={item.author} />
+                    <PostUser key={index} title={item.title} content={item.content} image={item.image} />
                 }
                 keyExtractor={(item, index) => index.toString()}
                 ListHeaderComponent={getHeader} />
