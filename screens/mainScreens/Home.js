@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, FlatList, 
 import React, { useState } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons';
 import PostItem from '../../components/PostItem';
-import { url_api_posts, url_api_user } from '../../data/API'
+import { url_api_posts, url_api_categories } from '../../data/API'
 
 
 const listTab = [
@@ -33,6 +33,7 @@ const Home = (props) => {
     const [isLoading, setIsLoading] = useState(false)
     const [status, setStatus] = useState('For you')
     const [data, setData] = useState([])
+    const [categories, setCategories] = useState([])
     const setStatusFilter = status => {
         setStatus(status)
     }
@@ -49,8 +50,17 @@ const Home = (props) => {
             })
     }
 
+    const getCategory = () => {
+        fetch(url_api_categories)
+            .then(async (res) => {
+                const categories = await res.json()
+                setCategories(categories)
+            })
+    }
+
     React.useEffect(() => {
         const unsubscribe = props.navigation.addListener('focus', () => {
+            getCategory()
             getData()
             setIsLoading(true)
         })
@@ -70,10 +80,10 @@ const Home = (props) => {
                 <View style={styles.listTab}>
                     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                         {
-                            listTab.map(item => (
-                                <TouchableOpacity style={[styles.btnTab, status === item.status && styles.btnTabActive]}
-                                    onPress={() => setStatusFilter(item.status)}>
-                                    <Text style={[styles.textTab, status === item.status && styles.textActive]}>{item.status}</Text>
+                            categories.map(item => (
+                                <TouchableOpacity style={[styles.btnTab, status === item.name && styles.btnTabActive]}
+                                    onPress={() => setStatusFilter(item.name)}>
+                                    <Text style={[styles.textTab, status === item.name && styles.textActive]}>{item.name}</Text>
                                 </TouchableOpacity>
                             ))
                         }
