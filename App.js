@@ -18,25 +18,28 @@ export default function App() {
 
     try {
       const value = await AsyncStorage.getItem(strKey)
+      console.log(value);
       if (value !== null) {
         // lấy được dữ liệu:
         setLogin(true)
-        console.log(value);
+
       }
+      console.log(login);
     } catch (e) {
       // error reading value
       console.log(e);
     }
 
   }
-
+  React.useEffect(() => {
+    getData()
+  })
 
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {getData}
         {
-          login && <Stack.Screen name='Login' component={Login} options={({ headerShown: false })} />
+          !login && <Stack.Screen name='Login' component={Login} options={({ headerShown: false })} />
         }
         <Stack.Screen name='Main' component={Main} options={({ headerShown: false })} />
       </Stack.Navigator>
