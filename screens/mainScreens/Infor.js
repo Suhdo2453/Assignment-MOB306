@@ -2,13 +2,19 @@ import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react
 import React, { useState } from 'react'
 import PostUser from '../../components/PostUser'
 import Icon from 'react-native-vector-icons/FontAwesome5'
+import IconLogout from 'react-native-vector-icons/MaterialIcons'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker'
 import * as FileSystem from 'expo-file-system'
 import { url_api_posts, url_api_user } from '../../data/API'
+import { useNavigation } from '@react-navigation/native';
+import RNRestart from 'react-native-restart';
+import * as Updates from "expo-updates"
 
 
 const Infor = (props) => {
+    const navigation = useNavigation();
+
     const [avatar, setAvatar] = useState(null)
     const [userName, setUserName] = useState(null)
     const [fullName, setFullName] = useState(null)
@@ -117,6 +123,12 @@ const Infor = (props) => {
             });
     }
 
+    const logout = async () => {
+        await AsyncStorage.clear();
+        Updates.reloadAsync()
+
+    }
+
     React.useEffect(() => {
         const unsubscribe = props.navigation.addListener('focus', () => {
             if (!avatar) {
@@ -160,6 +172,12 @@ const Infor = (props) => {
                             <Text style={{ fontSize: 20, fontWeight: '500' }}>12</Text>
                             <Text>Follower</Text>
                         </View>
+                        <TouchableOpacity
+                            style={{ alignItems: 'center', marginHorizontal: 16 }}
+                            onPress={logout}>
+                            <IconLogout name='logout' size={26} />
+                            <Text>Logout</Text>
+                        </TouchableOpacity>
                     </View>
 
                 </View>

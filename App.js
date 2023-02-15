@@ -21,7 +21,7 @@ export default function App() {
       if (value !== null) {
         // lấy được dữ liệu:
         setLogin(true)
-        console.log(value);
+
       }
     } catch (e) {
       // error reading value
@@ -29,26 +29,18 @@ export default function App() {
     }
 
   }
-
+  React.useEffect(() => {
+    getData()
+  })
 
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {getData}
         {
-          login && <Stack.Screen name='Login' component={Login} options={({ headerShown: false })} />
+          !login && <Stack.Screen name='Login' component={Login} options={({ headerShown: false })} />
         }
         <Stack.Screen name='Main' component={Main} options={({ headerShown: false })} />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
