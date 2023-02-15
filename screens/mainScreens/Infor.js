@@ -8,6 +8,8 @@ import * as ImagePicker from 'expo-image-picker'
 import * as FileSystem from 'expo-file-system'
 import { url_api_posts, url_api_user } from '../../data/API'
 import { useNavigation } from '@react-navigation/native';
+import RNRestart from 'react-native-restart';
+import * as Updates from "expo-updates"
 
 
 const Infor = (props) => {
@@ -123,6 +125,8 @@ const Infor = (props) => {
 
     const logout = async () => {
         await AsyncStorage.clear();
+        Updates.reloadAsync()
+
     }
 
     React.useEffect(() => {

@@ -18,13 +18,11 @@ export default function App() {
 
     try {
       const value = await AsyncStorage.getItem(strKey)
-      console.log(value);
       if (value !== null) {
         // lấy được dữ liệu:
         setLogin(true)
 
       }
-      console.log(login);
     } catch (e) {
       // error reading value
       console.log(e);
@@ -46,12 +44,3 @@ export default function App() {
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
