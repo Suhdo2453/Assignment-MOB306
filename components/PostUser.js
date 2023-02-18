@@ -8,10 +8,11 @@ import {
     MenuOption,
     MenuTrigger,
 } from 'react-native-popup-menu';
+import Dialog from './ModalAddItem'
+
 
 const PostItem = (props) => {
-    const { title, content, image, author } = props
-    const [fullName, setFullName] = useState(null)
+    const [showDialog, setShowDialog] = useState(false)
 
 
     return (
@@ -22,8 +23,8 @@ const PostItem = (props) => {
                     <IconThreeDot name='dots-three-vertical' size={18} />
                 </MenuTrigger>
                 <MenuOptions>
-                    <MenuOption text='Update' />
-                    <MenuOption onSelect={() => alert(`Delete`)} >
+                    <MenuOption text='Update' onSelect={() => setShowDialog(true)} />
+                    <MenuOption>
                         <Text style={{ color: 'red' }}>Delete</Text>
                     </MenuOption>
                     <MenuOption onSelect={() => alert(`Not called`)} disabled={true} text='Disabled' />
@@ -32,12 +33,12 @@ const PostItem = (props) => {
 
 
             <View style={styles.containerContent}>
-                <Text style={styles.title}>{title}</Text>
-                <Text style={styles.content}>{content}</Text>
+                <Text style={styles.title}>{props.itemData.title}</Text>
+                <Text style={styles.content}>{props.itemData.content}</Text>
             </View>
 
 
-            <Image source={{ uri: image }} style={{ maxHeight: 400, minHeight: 200, maxWidth: Dimensions.get('window').width }} resizeMode={'center'} />
+            <Image source={{ uri: props.itemData.image }} style={{ maxHeight: 400, minHeight: 200, maxWidth: Dimensions.get('window').width }} resizeMode={'center'} />
 
 
             <View style={styles.containerBtn}>
@@ -58,6 +59,12 @@ const PostItem = (props) => {
                 </TouchableOpacity>
 
             </View>
+
+            <Dialog isShow={showDialog}
+                setShowDialog={(value) => setShowDialog(value)}
+                getData={() => props.getData()}
+                itemData={props.itemData}
+            />
         </View>
     )
 }
