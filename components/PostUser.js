@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, Dimensions } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, Dimensions, Alert } from 'react-native'
 import React, { useState } from 'react'
 import Icon from 'react-native-vector-icons/EvilIcons'
 import IconThreeDot from 'react-native-vector-icons/Entypo'
@@ -9,10 +9,52 @@ import {
     MenuTrigger,
 } from 'react-native-popup-menu';
 import Dialog from './ModalAddItem'
+import { url_api_categories, url_api_posts } from '../data/API'
+
 
 
 const PostItem = (props) => {
     const [showDialog, setShowDialog] = useState(false)
+
+    const deleteData = () => {
+        fetch(url_api_posts + '/' + props.itemData.id, {
+            method: 'DELETE',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(async (res) => {
+                if (res.status == 200) {
+                    alert("Xóa thành công")
+                    props.getData()
+                }
+            })
+            .catch((ex) => {
+                console.log(ex);
+            });
+    }
+
+    const showConfirmDialog = (id) => {
+        return Alert.alert(
+            "Are your sure?",
+            "Are you sure you want to remove this?",
+            [
+                // The "Yes" button
+                {
+                    text: "Yes",
+                    onPress: () => {
+                        deleteData()
+                    },
+                },
+                // The "No" button
+                // Does nothing but dismiss the dialog when tapped
+                {
+                    text: "No",
+                },
+            ]
+        );
+    };
 
 
     return (
@@ -24,10 +66,9 @@ const PostItem = (props) => {
                 </MenuTrigger>
                 <MenuOptions>
                     <MenuOption text='Update' onSelect={() => setShowDialog(true)} />
-                    <MenuOption>
+                    <MenuOption onSelect={() => showConfirmDialog()} >
                         <Text style={{ color: 'red' }}>Delete</Text>
                     </MenuOption>
-                    <MenuOption onSelect={() => alert(`Not called`)} disabled={true} text='Disabled' />
                 </MenuOptions>
             </Menu>
 

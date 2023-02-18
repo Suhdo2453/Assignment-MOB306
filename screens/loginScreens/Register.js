@@ -63,17 +63,40 @@ const Register = ({ navigation }) => {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(user),
+            body: JSON.stringify({
+                userName: userName,
+                password: password,
+                fullName: fullName,
+                avatar: avatar
+
+            }),
         })
             .then(async (res) => {
-                if (res.status == 201)
-                    try {
-                        await AsyncStorage.setItem('loginInfo', JSON.stringify(user))
-                        navigation.navigate('Main')
-                        alert("Thêm thành công")
-                    } catch (error) {
-                        console.log(error);
-                    }
+                let url_check_login = url_api_user + '?userName=' + userName
+                if (res.status == 201) {
+                    fetch(url_check_login)
+                        .then((res) => { return res.json() })
+                        .then(async (res_login) => {
+                            if (res_login.length != 1) {
+                                alert('Sai username hoac loi trung lap du lieu')
+                                return
+                            } else {
+                                let objUser = res_login[0]
+
+                                try {
+                                    await AsyncStorage.setItem('loginInfo', JSON.stringify(objUser))
+                                    navigation.navigate('Main')
+                                } catch (error) {
+                                    console.log(error);
+                                }
+
+                            }
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        })
+                }
+
 
             })
             .catch((ex) => {
