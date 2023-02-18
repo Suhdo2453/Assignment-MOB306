@@ -1,7 +1,13 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image, Dimensions } from 'react-native'
 import React, { useState } from 'react'
-import Icon from 'react-native-vector-icons/EvilIcons';
-import IconFollow from 'react-native-vector-icons/Feather'
+import Icon from 'react-native-vector-icons/EvilIcons'
+import IconThreeDot from 'react-native-vector-icons/Entypo'
+import {
+    Menu,
+    MenuOptions,
+    MenuOption,
+    MenuTrigger,
+} from 'react-native-popup-menu';
 
 const PostItem = (props) => {
     const { title, content, image, author } = props
@@ -10,6 +16,20 @@ const PostItem = (props) => {
 
     return (
         <View style={styles.container}>
+
+            <Menu>
+                <MenuTrigger style={{ alignSelf: 'flex-end' }}>
+                    <IconThreeDot name='dots-three-vertical' size={18} />
+                </MenuTrigger>
+                <MenuOptions>
+                    <MenuOption text='Update' />
+                    <MenuOption onSelect={() => alert(`Delete`)} >
+                        <Text style={{ color: 'red' }}>Delete</Text>
+                    </MenuOption>
+                    <MenuOption onSelect={() => alert(`Not called`)} disabled={true} text='Disabled' />
+                </MenuOptions>
+            </Menu>
+
 
             <View style={styles.containerContent}>
                 <Text style={styles.title}>{title}</Text>
