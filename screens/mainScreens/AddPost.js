@@ -5,7 +5,7 @@ import * as ImagePicker from 'expo-image-picker'
 import * as FileSystem from 'expo-file-system'
 import DropDownPicker from 'react-native-dropdown-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { url_api_posts } from '../../data/API'
+import { url_api_posts, url_api_categories } from '../../data/API'
 
 
 const AddPost = () => {
@@ -16,11 +16,7 @@ const AddPost = () => {
 
     const [open, setOpen] = useState(false);
     const [category, setCategory] = useState(null);
-    const [items, setItems] = useState([
-        { label: 'For you', value: 'for you' },
-        { label: 'Creative', value: 'creative' },
-        { label: 'UI/UX Design', value: 'UI/UX Design' }
-    ]);
+    const [items, setItems] = useState([]);
 
     const pickImage = async () => {
 
@@ -76,11 +72,11 @@ const AddPost = () => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                user_id: userId,
+                tb_usersId: userId,
                 title: title,
                 content: content,
                 image: image,
-                category: category
+                categoryId: category
             }),
         })
             .then(async (res) => {
@@ -92,6 +88,22 @@ const AddPost = () => {
                 console.log(ex);
             });
     }
+
+    const getData = () => {
+        fetch(url_api_categories)
+            .then((res) => { return res.json() })
+            .then((res_json) => {
+                let arrForDropDown = res_json.map((item, index, src) => {
+                    return { label: item.name, value: item.id }
+                })
+                setItems(arrForDropDown)
+            })
+    }
+
+    React.useEffect(() => {
+        if (items.length <= 0)
+            getData()
+    })
 
     const AddImage = () => {
         return (
