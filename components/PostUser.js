@@ -69,7 +69,6 @@ const PostItem = (props) => {
                     <MenuOption onSelect={() => showConfirmDialog()} >
                         <Text style={{ color: 'red' }}>Delete</Text>
                     </MenuOption>
-                    <MenuOption onSelect={() => alert(`Not called`)} disabled={true} text='Disabled' />
                 </MenuOptions>
             </Menu>
 
