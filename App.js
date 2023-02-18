@@ -6,6 +6,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './screens/Login';
 import Main from './screens/Main';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { MenuProvider } from 'react-native-popup-menu'
+
 
 const Stack = createNativeStackNavigator()
 
@@ -35,13 +37,15 @@ export default function App() {
   })
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        {
-          !login && <Stack.Screen name='Login' component={Login} options={({ headerShown: false })} />
-        }
-        <Stack.Screen name='Main' component={Main} options={({ headerShown: false })} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <MenuProvider>
+      <NavigationContainer>
+        <Stack.Navigator>
+          {
+            !login && <Stack.Screen name='Login' component={Login} options={({ headerShown: false })} />
+          }
+          <Stack.Screen name='Main' component={Main} options={({ headerShown: false })} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </MenuProvider>
   );
 }

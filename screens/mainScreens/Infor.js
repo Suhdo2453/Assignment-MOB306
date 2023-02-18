@@ -23,6 +23,7 @@ const Infor = (props) => {
 
     const [data, setData] = useState([])
 
+
     let strKey = 'loginInfo'
 
     const getData = async () => {
@@ -197,10 +198,12 @@ const Infor = (props) => {
             <FlatList
                 data={data}
                 renderItem={({ item, index }) =>
-                    <PostUser key={index} title={item.title} content={item.content} image={item.image} />
+                    <PostUser itemData={item} getData={() => getData()} />
                 }
                 keyExtractor={(item, index) => index.toString()}
                 ListHeaderComponent={getHeader} />
+
+
         </View>
     )
 }
