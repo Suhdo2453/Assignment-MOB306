@@ -4,35 +4,11 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import PostItem from '../../components/PostItem';
 import { url_api_posts, url_api_categories } from '../../data/API'
 
-
-const listTab = [
-    {
-        status: 'For you'
-    },
-    {
-        status: 'Creative'
-    },
-    {
-        status: 'UI/UX Design'
-    },
-    {
-        status: 'All3'
-    },
-    {
-        status: 'All4'
-    },
-    {
-        status: 'All5'
-    },
-    {
-        status: 'All6'
-    }
-]
-
 const Home = (props) => {
     const [isLoading, setIsLoading] = useState(false)
     const [status, setStatus] = useState('For you')
     const [data, setData] = useState([])
+    const [m_Data, setM_Data] = useState([])
     const [categories, setCategories] = useState([])
     const setStatusFilter = status => {
         setStatus(status)
@@ -42,7 +18,9 @@ const Home = (props) => {
         fetch(url_api_posts + '?_expand=tb_users')
             .then(async (res) => {
                 const posts = await res.json()
+                posts.reverse()
                 setData(posts)
+                setM_Data(posts)
                 setIsLoading(false)
             })
             .catch(err => {
@@ -82,7 +60,10 @@ const Home = (props) => {
                         {
                             categories.map(item => (
                                 <TouchableOpacity style={[styles.btnTab, status === item.name && styles.btnTabActive]}
-                                    onPress={() => setStatusFilter(item.name)}>
+                                    onPress={() => {
+                                        setStatusFilter(item.name)
+                                        setM_Data(data.filter((m_item) => m_item.categoryId == item.id).map((item) => (item)))
+                                    }}>
                                     <Text style={[styles.textTab, status === item.name && styles.textActive]}>{item.name}</Text>
                                 </TouchableOpacity>
                             ))
@@ -103,9 +84,8 @@ const Home = (props) => {
                     <Icon name='notifications-outline' size={30} color={'black'} />
                 </TouchableOpacity>
             </View>
-
             <FlatList
-                data={data}
+                data={m_Data}
                 renderItem={({ item, index }) =>
                     <PostItem key={index} title={item.title} content={item.content} image={item.image} author={item.tb_users.fullName} />
                 }

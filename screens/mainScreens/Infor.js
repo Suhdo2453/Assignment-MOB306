@@ -41,6 +41,7 @@ const Infor = (props) => {
                 fetch(url_api_posts + '?tb_usersId=' + obj.id)
                     .then(async (res) => {
                         const posts = await res.json()
+                        posts.reverse()
                         setData(posts)
                     })
                     .catch(err => {
